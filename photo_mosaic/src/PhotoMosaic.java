@@ -14,6 +14,7 @@ public class PhotoMosaic {
                 System.out.println(ip.decodeRGB(image[i][j]));
             }
         }
+        System.out.println("Average Image Color: " + ip.getAverageColorRGB());
     }
 }
 

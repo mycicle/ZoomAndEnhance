@@ -7,12 +7,13 @@ class ImageProcessor{
     BufferedImage image;
     String path;
     int height, width;
+    int[][] imageRGB;
 
     public ImageProcessor(String path) throws Exception{
         image = ImageIO.read(new File(path));
         this.width = image.getWidth();
         this.height = image.getHeight();
-
+        this.imageRGB = this._getImageRGB();
     }
 
     public int getWidth(){
@@ -22,8 +23,11 @@ class ImageProcessor{
         return this.height;
     }
 
+    public int[][]getImageRGB(){
+        return this.imageRGB;
+    }
 
-    public int[][] getImageRGB(){
+    public int[][] _getImageRGB(){
         final byte[] pixels = ((DataBufferByte) this.image.getRaster().getDataBuffer()).getData();
         final int w = this.getWidth();
         final int h = this.getHeight();
@@ -49,6 +53,7 @@ class ImageProcessor{
             }
         }
 
+        this.imageRGB = output;
         return output;
     }
 
@@ -59,5 +64,31 @@ class ImageProcessor{
 
         RGB rgb = new RGB(red,green,blue);
         return rgb;
+    }
+
+    public RGB getAverageColorRGB() {
+        RGB rgb;
+        double counter = 0;
+        double sumRed = 0;
+        double sumGreen = 0;
+        double sumBlue = 0;
+
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                rgb = this.decodeRGB(this.imageRGB[i][j]);
+                if (rgb.getAverageIntensity() < 50) {
+                    continue;
+                }
+                sumRed += rgb.getRed();
+                sumGreen += rgb.getGreen();
+                sumBlue += rgb.getBlue();
+                counter += 1;
+            }
+        }
+
+
+        RGB average_color = new RGB((int) (sumRed / counter), (int) (sumGreen / counter), (int) (sumBlue / counter));
+        return average_color;
+
     }
 }

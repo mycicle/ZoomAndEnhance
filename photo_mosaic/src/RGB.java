@@ -14,13 +14,20 @@ class RGB{
     public int getRed(){
         return this.rgb[0];
     }
-    public int getBlue(){
+    public int getGreen(){
         return this.rgb[1];
     }
-    public int getGreen(){
+    public int getBlue(){
         return this.rgb[2];
     }
 
+    public int getAverageIntensity(){
+        int sum = 0;
+        for (int i = 0; i < this.rgb.length; i++){
+            sum += this.rgb[i];
+        }
+        return (sum/this.rgb.length);
+    }
     public String toString(){
         return "(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
     }
