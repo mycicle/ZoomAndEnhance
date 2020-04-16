@@ -1,4 +1,5 @@
 import com.sun.xml.internal.ws.resources.UtilMessages;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -108,7 +109,7 @@ class ImageProcessor{
         RGB rgb = new RGB(red,green,blue);
         return rgb;
     }
-    public int encodeRGB(RGB rgb){
+    public int encodeRGB(@NotNull RGB rgb){
         int output = 0;
         output = output | (rgb.getRed() << 16);
         output = output | (rgb.getGreen() << 8);
