@@ -1,7 +1,10 @@
+import com.sun.xml.internal.ws.resources.UtilMessages;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
+import java.security.InvalidParameterException;
 
 class ImageProcessor{
     BufferedImage image;
@@ -22,6 +25,46 @@ class ImageProcessor{
     public int getHeight(){
         return this.height;
     }
+
+    public int[][] downscaleImage(int scale) throws Exception{
+        if (((this.width % scale) != 0) || ((this.height % scale) != 0)){
+            System.out.println("Need to have th image width and height evenly divisible by the scale");
+            throw new InvalidParameterException();
+        }
+
+        int scaled_width = this.width / scale;
+        int scaled_height = this.height / scale;
+
+
+//        This thing will step through the image one sub image at a time
+//        it will get the average color of that sub image and then set that as the color of all of the pixels in that region
+//        It will also be able to return a 2d array of the new colorings
+
+        int[][] output = new int[scale][scale];
+
+        for (int i = 0, a=0; i < this.height; i += scaled_height, a++){
+            for (int j = 0, b=0; j < this.width; j+= scaled_width, b++){
+
+                int[][] sub_image = new int[scaled_height][scaled_width];
+                for (int h=i, x=0; h < i+scaled_height; h++, x++){
+                    for (int k=j, y=0; k< j+scaled_width; k++, y++){
+                        sub_image[x][y] = this.imageRGB[h][k];
+                    }
+                }
+
+                int average_color = this.getAverageColorRegion(sub_image, scaled_height, scaled_width);
+                for (int h=i; h < i+scaled_height; h++){
+                    for (int k=j; k< j+scaled_width; k++){
+                        this.imageRGB[h][k] = average_color;
+                    }
+                }
+
+                output[a][b] = average_color;
+            }
+        }
+        return output;
+    }
+
 
     public int[][]getImageRGB(){
         return this.imageRGB;
@@ -65,6 +108,13 @@ class ImageProcessor{
         RGB rgb = new RGB(red,green,blue);
         return rgb;
     }
+    public int encodeRGB(RGB rgb){
+        int output = 0;
+        output = output | (rgb.getRed() << 16);
+        output = output | (rgb.getGreen() << 8);
+        output = output | rgb.getBlue();
+        return output;
+    }
 
     public RGB getAverageColorRGB() {
         RGB rgb;
@@ -85,10 +135,33 @@ class ImageProcessor{
                 counter += 1;
             }
         }
-
-
         RGB average_color = new RGB((int) (sumRed / counter), (int) (sumGreen / counter), (int) (sumBlue / counter));
         return average_color;
+    }
 
+    public RGB getAverageColorRegionRGB(int[][] region, int height, int width){
+        RGB rgb;
+        double counter = 0;
+        double sumRed = 0;
+        double sumGreen = 0;
+        double sumBlue = 0;
+
+        for (int i = 0; i < height; i ++){
+            for (int j = 0; j < width; j ++){
+                rgb = this.decodeRGB(region[i][j]);
+                sumRed += rgb.getRed();
+                sumGreen += rgb.getGreen();
+                sumBlue += rgb.getBlue();
+                counter += 1;
+            }
+        }
+        RGB average_color = new RGB((int) (sumRed / counter), (int) (sumGreen / counter), (int) (sumBlue / counter));
+        return average_color;
+    }
+
+    public int getAverageColorRegion(int[][] image, int height, int width){
+        RGB rgb = this.getAverageColorRegionRGB(image, width, height);
+        int encoded_rgb = this.encodeRGB(rgb);
+        return encoded_rgb;
     }
 }
