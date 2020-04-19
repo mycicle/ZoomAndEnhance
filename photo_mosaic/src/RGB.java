@@ -11,15 +11,17 @@ class RGB{
     public int[] getRGB(){
         return this.rgb;
     }
-    public int getRed(){
-        return this.rgb[0];
-    }
+    public int getRed() { return this.rgb[0]; }
     public int getGreen(){
         return this.rgb[1];
     }
     public int getBlue(){
         return this.rgb[2];
     }
+
+    public void setRed(int n) { this.rgb[0] = n; }
+    public void setGreen(int n) { this.rgb[1] = n; }
+    public void setBlue(int n) { this.rgb[2] = n; }
 
     public int getAverageIntensity(){
         int sum = 0;

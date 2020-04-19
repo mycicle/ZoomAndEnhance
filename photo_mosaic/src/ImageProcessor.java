@@ -12,12 +12,21 @@ class ImageProcessor{
     String path;
     int height, width;
     int[][] imageRGB;
+    int scaled_height, scaled_width;
+    int scale;
+    int average_color;
+    RGB average_color_RGB;
+    int[][] downscaled_image;
 
     public ImageProcessor(String path) throws Exception{
         image = ImageIO.read(new File(path));
         this.width = image.getWidth();
         this.height = image.getHeight();
         this.imageRGB = this._getImageRGB();
+        this.scaled_height = 0;
+        this.scaled_width = 0;
+        this.average_color = this.encodeRGB(this.getAverageColorRGB());
+        this.average_color_RGB = this.decodeRGB(this.average_color);
     }
 
     public int getWidth(){
@@ -26,7 +35,14 @@ class ImageProcessor{
     public int getHeight(){
         return this.height;
     }
-
+    public int getScaledHeight() {return this.scaled_height;}
+    public int getScaledWidth() {return this.scaled_width;}
+    //IMPORTANT NOTE ABOUT DOWNSCALE IMAGE
+    //it will set the imageRGB object within the image processor object equal to a more pixelated version of itself
+    //it will return a color array equivalent to the color of each of those pixles in the pixelated region
+    //scaled height and width will be the height and width of the smaller pixelated regions
+    //scale witll be the number of pixelated regionson each side
+    //output is of size scale x scale
     public int[][] downscaleImage(int scale) throws Exception{
         if (((this.width % scale) != 0) || ((this.height % scale) != 0)){
             System.out.println("Need to have th image width and height evenly divisible by the scale");
@@ -35,7 +51,8 @@ class ImageProcessor{
 
         int scaled_width = this.width / scale;
         int scaled_height = this.height / scale;
-
+        this.scaled_width = width/scaled_width;
+        this.scaled_height = height/scaled_height;
 
 //        This thing will step through the image one sub image at a time
 //        it will get the average color of that sub image and then set that as the color of all of the pixels in that region
@@ -63,10 +80,11 @@ class ImageProcessor{
                 output[a][b] = average_color;
             }
         }
+        this.downscaled_image = output;
         return output;
     }
 
-
+    public Image getImage() { return new Image(this.average_color_RGB, this.downscaled_image); }
     public int[][]getImageRGB(){
         return this.imageRGB;
     }
@@ -164,5 +182,14 @@ class ImageProcessor{
         RGB rgb = this.getAverageColorRegionRGB(image, width, height);
         int encoded_rgb = this.encodeRGB(rgb);
         return encoded_rgb;
+    }
+
+    public void insertImage(int[][] image, int x, int y){
+        for (int i = y, h = 0; i < y + scaled_height; i++, h++){
+            for (int j = x, k = 0; j < x + scaled_width; j++, k++){
+                this.imageRGB[i][j] = image[h][k];
+            }
+        }
+
     }
 }
