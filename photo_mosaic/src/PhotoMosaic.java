@@ -77,6 +77,25 @@ public class PhotoMosaic {
 
         ImageIO.write(compound_image, "jpg", new File("./compoundImageTest.jpg"));
 
+
+        ImageContainer ic = new ImageContainer();
+
+        ic.add(new Image(ip.getAverageColorRegionRGB(downscaled_image_color_map, ip.getScaledHeight(), ip.getScaledWidth()), downscaled_image_color_map));
+
+        BufferedImage image_from_container = new BufferedImage(ip.getWidth(), ip.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+        for (int i = 0; i < ip.getWidth(); i+= ip.getScaledWidth()){
+            for (int j = 0; j < ip.getHeight(); j += ip.getScaledHeight()){
+                ip.insertImage(ic.getImages(ip.decodeRGB(ip.imageRGB[j][i])).getImage(), i, j);
+
+            }
+        }
+        for (int i = 0; i < ip.getWidth(); i++){
+            for (int j = 0; j < ip.getHeight(); j++){
+                image_from_container.setRGB(j, i, ip.imageRGB[i][j]);
+            }
+        }
+        ImageIO.write(image_from_container, "jpg", new File("./imageFromContainerTest.jpg"));
+
         //now to make the small images we will need to make an image processor object for each of them and then use their "outputs" from downscale image as the inputs
         //into the original image
 
