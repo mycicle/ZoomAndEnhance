@@ -93,10 +93,11 @@ class ImageProcessor{
         final byte[] pixels = ((DataBufferByte) this.image.getRaster().getDataBuffer()).getData();
         final int w = this.getWidth();
         final int h = this.getHeight();
+        System.out.println(w + " " + h);
         final boolean hasAlphaChannel = image.getAlphaRaster() != null;
 
         //so we will need to do this. If it has no alpha channel then it will be 255 every time
-        int[][] output = new int[w][h];
+        int[][] output = new int[h][w];
         //If this thing is a 3 byte BGR image
         if (image.getType() == 5){
             //the least significant byte is blue
@@ -115,7 +116,6 @@ class ImageProcessor{
             }
         }
 
-        this.imageRGB = output;
         return output;
     }
 

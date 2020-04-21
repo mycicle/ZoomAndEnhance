@@ -7,41 +7,74 @@ import java.util.*;
 public class PhotoMosaic {
 
 
-    public static int[][] make_mosaic(String[] paths) throws Exception{
+    public static BufferedImage make_mosaic(String[] paths, int scale) throws Exception{
         ArrayList<ImageProcessor> ips = new ArrayList<>();
-        ArrayList<Image> images  = new ArrayList<>();
+        ImageContainer images  = new ImageContainer();
         BufferedImage output;
-        ImageProcessor base;
+        ImageProcessor base = null;
+        boolean first = true;
         //ips is an array list of all of the photos with the first one being the base image and the subsequent ones being the
         //images to be inserted
         //images is an array list of the images and their average colors. The elements in images correspond to the elements in ips
         //may not need images but it is helpful to have for debugging logic
-        for (String path : paths){
-            ImageProcessor ip = new ImageProcessor(path);
+        for (int i = 0; i < paths.length; i ++){
+            if (first){
+                base = new ImageProcessor((paths[i]));
+                first = false;
+            }
+            ImageProcessor ip = new ImageProcessor(paths[i]);
+            ip.shrink_image_to(base.getWidth(), base.getHeight());
             ips.add(ip);
-            images.add(new Image(ip.getAverageColorRGB(), ip.getImageRGB()));
+            images.add(new Image(ip.getAverageColorRGB(), ip.downscaleImage(scale)));
         }
-        base = ips.get(0);
+
         output = new BufferedImage(base.getWidth(), base.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 
         //now we have our base image and the output container. We may want to change the return type to a Buffered Image
 
-        int[][] downscaled_base = base.downscaleImage(20);
-        return downscaled_base;
-    }
-    public static void main(String[] args) throws Exception {
+        int[][] base_colormap = base.downscaleImage(scale);
 
-        ImageProcessor ip = new ImageProcessor("./assets/star_wars.jpg");
-        ip.shrink_image_to(200,200);
-        BufferedImage bi = new BufferedImage(ip.getWidth(), ip.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-        System.out.println(ip.getWidth() + ip.getHeight());
-        for (int i = 0; i < ip.getHeight(); i++){
-            for (int j = 0; j < ip.getWidth(); j++){
-                bi.setRGB(j , i, ip.imageRGB[i][j]);
+        for (int i = 0, h = 0; i < base.getHeight(); i+=base.scaled_height, h++){
+            for (int j = 0, k = 0; j < base.getWidth(); j+=base.scaled_width, k++){
+                base.insertImage(images.getImages(base.decodeRGB(base_colormap[h][k])).getImage(), i, j);
             }
         }
 
-        ImageIO.write(bi, "jpg", new File("./shrunk_image_200x200.jpg"));
+        for (int i = 0; i < base.getHeight(); i++){
+            for (int j = 0; j < base.getWidth(); j++){
+                output.setRGB(j, i, base.imageRGB[i][j]);
+            }
+        }
+        return output;
+    }
+
+    
+    public static void main(String[] args) throws Exception {
+
+//        ImageProcessor ip = new ImageProcessor("assets/night2.jpg");
+//        BufferedImage bi = new BufferedImage(ip.getWidth(), ip.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+//        for (int i = 0; i < ip.getHeight(); i++){
+//            for (int j = 0; j < ip.getWidth(); j++){
+//                bi.setRGB(j , i, ip.imageRGB[i][j]);
+//            }
+//        }
+//        ImageIO.write(bi, "jpg", new File("./testout.jpg"));
+
+
+        String[] paths = new String[] {"assets/test2.jpg", "assets/sunset3.jpg", "assets/star_wars.jpg", "assets/night.jpg", "assets/night.jpg", "assets/night3.jpg"};
+        BufferedImage mosaic = make_mosaic(paths, 20);
+        ImageIO.write(mosaic, "jpg", new File("./mosaic"));
+//
+//        ImageProcessor ip = new ImageProcessor("assets/star_wars.jpg");
+//        ip.shrink_image_to(100,400);
+//        BufferedImage bi = new BufferedImage(ip.getWidth(), ip.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+//        System.out.println(ip.getWidth() + ip.getHeight());
+//        for (int i = 0; i < ip.getHeight(); i++){
+//            for (int j = 0; j < ip.getWidth(); j++){
+//                bi.setRGB(j , i, ip.imageRGB[i][j]);
+//            }
+//        }
+//        ImageIO.write(bi, "jpg", new File("./shrunk_image_200x200.jpg"));
         /*
         ImageProcessor ip = new ImageProcessor("./assets/star_wars.jpg");
         int[][] image = ip.getImageRGB();

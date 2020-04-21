@@ -44,7 +44,7 @@ public class ImageContainer {
                 return i;
             }
         }
-        return images.get(0);
+        return images.get(1);
     }
 }
 
