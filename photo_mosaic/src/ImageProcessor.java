@@ -192,4 +192,34 @@ class ImageProcessor{
         }
 
     }
+
+    public void shrink_image_to(int width, int height){
+        if (this.width > width){
+            int center = (int) this.width / 2;
+            int left_bound = (int) (center - width/2);
+            int right_bound = (int) (center + width/2);
+            int[][] new_imageRGB = new int[this.height][right_bound-left_bound];
+            for (int i = 0; i < this.height; i++) {
+                for (int j = left_bound, k=0; j < right_bound; j++, k++) {
+                    new_imageRGB[i][k] = this.imageRGB[i][j];
+                }
+            }
+            this.imageRGB = new_imageRGB;
+            this.width = right_bound-left_bound;
+        }
+
+        if (this.height > height){
+            int center = (int) this.height/2;
+            int lower_bound = (int)(center-height/2);
+            int upper_bound = (int)(center+height/2);
+            int[][] new_imageRGB = new int[upper_bound-lower_bound][this.width];
+            for(int i = lower_bound, h=0; i < upper_bound; i++, h++){
+                for (int j = 0; j < this.width; j++){
+                    new_imageRGB[h][j] = this.imageRGB[i][j];
+                }
+            }
+            this.imageRGB = new_imageRGB;
+            this.height = upper_bound-lower_bound;
+        }
+    }
 }
