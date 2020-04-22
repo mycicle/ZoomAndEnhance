@@ -48,7 +48,7 @@ public class PhotoMosaic {
         return output;
     }
 
-    
+
     public static void main(String[] args) throws Exception {
 
 //        ImageProcessor ip = new ImageProcessor("assets/night2.jpg");
