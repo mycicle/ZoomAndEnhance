@@ -1,6 +1,6 @@
-function photomosaic(inputvideo, inputphoto, num_photos_x, num_photos_y)
+function photomosaic_bw(inputvideo, inputphoto, outputname, num_photos_x, num_photos_y)
 
-extract_and_convert(inputvideo, 120);
+%extract_and_convert(inputvideo, 120);
 IMG = imread([inputphoto, '.jpg']);
 Size_IMG = size(IMG);
 Output = zeros(Size_IMG(1), Size_IMG(2), 'uint8');
@@ -8,7 +8,6 @@ Color_Index = imresize(IMG, [num_photos_y num_photos_x]);
 Size_Index = size(Color_Index);
 Photo_Index = zeros(Size_Index(1), Size_Index(2), 'int32');
 
-%bw only for now
 files = dir(['bwframes', '/*.jpg']);
 Num_Files = size(files,1);
 Frame_Index = zeros(1, Num_Files);
@@ -21,7 +20,7 @@ end
 
 for i = 1:Size_Index(2)
     for j = 1:Size_Index(1)
-        n = 7;
+        n = 0;
         while Photo_Index(j, i) == 0
             Random = randi([1 int16(Num_Files)]);
             for k = Random:Num_Files
@@ -61,6 +60,6 @@ for i = 1:Size_Index(2)
     end
 end
 
-imwrite(Output, 'Output.jpg');
+imwrite(Output, [outputname, '.jpg']);
 
 end

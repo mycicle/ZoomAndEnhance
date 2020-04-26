@@ -1,1 +1,0 @@
-photomosaic('test4','testpic3',384,216);

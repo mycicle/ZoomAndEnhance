@@ -1,12 +1,12 @@
 function extract_and_convert(inputvidname, skip_frames)
 vid = VideoReader([inputvidname, '.mp4']);
 num_frames = vid.NumberOfFrames;
-mkdir frames
+mkdir colorframes
 mkdir bwframes
 count = 1;
 for i = 1:skip_frames:num_frames
     frames = read(vid, i);
-    imwrite(frames,['./frames/frame', int2str(count), '.jpg']);
+    imwrite(frames,['./colorframes/colorframe', int2str(count), '.jpg']);
     
     s = size(frames);
     r = zeros(s(1), s(2));
