@@ -19,6 +19,7 @@ public class ImageContainer {
     public void add(Image im){
         this.images.add(im);
     }
+
     public Image getImage(int average_color){
         Image output = null;
         for (int i = 0; i < images.size(); i ++){

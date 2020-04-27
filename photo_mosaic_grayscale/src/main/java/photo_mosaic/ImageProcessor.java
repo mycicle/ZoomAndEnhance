@@ -26,7 +26,7 @@ public class ImageProcessor {
         double average_intensity = 0;
         double size = this.width * this.height;
         for (int i = 0; i < this.width; i++){
-            for (int j = 0; j < this.width; j++){
+            for (int j = 0; j < this.height; j++){
                 average_intensity += intensity_image[i][j];
             }
         }
@@ -38,7 +38,6 @@ public class ImageProcessor {
         int[][] output = new int[this.width][this.height];
         final int W = this.width;
         final int H = this.height;
-
 
         if (image.getType() == 5) {
             //the least significant byte is blue
@@ -106,14 +105,15 @@ public class ImageProcessor {
         int step_w = this.width / w;
         int step_h = this.height / h;
         int[][] output = new int[w][h];
-        System.out.println(w);
-        System.out.println(h);
 
         for (int i = 0, x=0; i < this.width; i += step_w, x++){
             for (int j = 0, y=0; j < this.height; j += step_h, y++){
                 output[x][y] = this.averageIntensity(i, j, step_w, step_h);
             }
         }
+        this.width = w;
+        this.height = h;
+        this.intensity_image = output;
         return output;
     }
 
