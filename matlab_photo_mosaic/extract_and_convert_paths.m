@@ -1,4 +1,4 @@
-function extract_and_convert(inputvidname, skip_frames)
+function extract_and_convert_paths(inputvidname, skip_frames)
 vid = VideoReader([inputvidname, '.mp4']);
 num_frames = vid.NumberOfFrames;
 mkdir colorframes
