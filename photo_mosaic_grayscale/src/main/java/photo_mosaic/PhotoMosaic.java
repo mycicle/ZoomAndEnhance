@@ -25,16 +25,6 @@ public class PhotoMosaic {
             container.add(images[i]);
         }
 
-//        int counter = 0;
-//        String path = "image";
-//        for (Image i : container.images){
-//            int[][] input = i.getImage();
-//            path = path + counter + ".jpg";
-//            base.saveImage(input, w, h, path);
-//            System.out.println(i.getImage());
-//            counter++;
-//        }
-//        System.out.println(counter);
         //w is the width of the small pics
         //h is the height pf the small pics
         //the number of small pics horizontally = base width / w, same with height
@@ -64,17 +54,12 @@ public class PhotoMosaic {
                     result.add(f.getAbsolutePath());
                 }
             }
-
         }
     }
 
     public static void main(String[] args) throws Exception{
-//        ImageProcessor ip = new ImageProcessor("C:\\Users\\miked\\git\\ZoomAndEnhance\\photo_mosaic_grayscale\\src\\main\\resources\\sunset.jpeg");
-//        ip.saveImage("grayNight2");
-//        int[][] resize = ip.resizeImage(470, 197);
-//        ip.saveImage(resize, 470, 197, "resize_test");
 
-        final File folder = new File("C:\\Users\\miked\\git\\ZoomAndEnhance\\photo_mosaic_grayscale\\src\\main\\resources");
+        final File folder = new File("src\\main\\resources");
         List<String> result = new ArrayList<>();
         search(".*\\.jpg", folder, result);
         String[] paths = new String[result.size()];
@@ -82,11 +67,7 @@ public class PhotoMosaic {
             paths[i] = result.get(i);
         }
 
-        make_mosaic("C:\\Users\\miked\\git\\ZoomAndEnhance\\photo_mosaic_grayscale\\8kbase2.jpg", paths, 48, 27);
-//        String[] paths = new String[] { "C:\\Users\\miked\\git\\ZoomAndEnhance\\photo_mosaic_grayscale\\src\\main\\resources\\sunset.jpeg"
-//        String[] paths = new String[] { "C:\\Users\\miked\\git\\ZoomAndEnhance\\photo_mosaic_grayscale\\src\\main\\resources\\sunset.jpeg"
-//        };
-//        make_mosaic("C:\\Users\\miked\\git\\ZoomAndEnhance\\photo_mosaic_grayscale\\src\\main\\resources\\sunset.jpeg", paths, );
+        make_mosaic("base_image_8k.jpg", paths, 48, 27);
     }
 }
 
